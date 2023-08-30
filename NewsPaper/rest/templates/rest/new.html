@@ -1,0 +1,36 @@
+<!--  наследуемся от шаблона base.html -->
+{% extends 'layout/base.html' %}
+{% load custom_filters %} <!-- не забываем заранее загружать наши фильтры! -->#}
+<!-- Название у нас будет proudcts -->
+{% block title %}
+{{ new }}
+{% endblock title %}
+
+<!-- В контенте на странице мы выводим все товары -->
+{% block content %}
+<h1>{{ new }}</h1>
+    <table>
+        <tr>
+            <td>
+                Заголовок
+            </td>
+            <td>
+                Дата публикации
+            </td>
+            <td>
+                Текст
+            </td>
+        </tr>
+        <tr>
+            <td>
+                {{ new.title|censor }}
+            </td>
+            <td>
+                {{ new.time_in|date:'d-M-Y H:i'}}
+            </td>
+            <td>
+                {{ new.post_text|censor }}
+            </td>
+        </tr>
+    </table>
+{% endblock content %}

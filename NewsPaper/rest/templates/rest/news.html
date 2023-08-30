@@ -1,0 +1,43 @@
+<!--  наследуемся от шаблона base.html -->
+{% extends 'layout/base.html' %}
+{% load custom_filters %} <!-- не забываем заранее загружать наши фильтры! -->#}
+<!-- Название у нас будет proudcts -->
+{% block title %}
+Новости
+{% endblock title %}
+
+<!-- В контенте на странице мы выводим все товары -->
+{% block content %}
+<h1>Все новости</h1>
+    <h3>Количество новостей - {{ news|length }}</h3>
+    {% if news %}
+        <table class="table">
+            <tr>
+                <th scope="col">
+                    Заголовок
+                </th>
+                <th scope="col">
+                    Дата публикации
+                </th>
+                <th scope="col">
+                    Текст
+                </th>
+            </tr>
+            {% for new in news %}
+                <tr>
+                    <td>
+                        {{ new.title|censor }}
+                    </td>
+                    <td>
+                        {{ new.time_in|date:'d-M-Y H:i'}}
+                    </td>
+                    <td>
+                        {{ new.post_text|truncatechars:50|censor }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <h2>Новостей нет</h2>
+    {% endif %}
+{% endblock content %}
