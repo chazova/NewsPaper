@@ -21,6 +21,9 @@ class Author(models.Model):
         self.rating = rating_post["rating__sum"] * 3 + rating_post_comment["rating__sum"] + rating_comment["rating__sum"]
         self.save()
 
+    def __str__(self):
+        return self.author.username
+
 class Category(models.Model):
     category_name = models.CharField(max_length=255, primary_key=True)
 
@@ -51,6 +54,9 @@ class Post(models.Model):
 
     def __str__(self):
         return f'News #{self.pk} - Title: {self.title}'
+
+    def get_absolute_url(self):  # добавим абсолютный путь, чтобы после создания нас перебрасывало на страницу с товаром
+        return f'/news/{self.id}'
 
 class PostCategory(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)

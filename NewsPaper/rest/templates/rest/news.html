@@ -8,8 +8,13 @@
 
 <!-- В контенте на странице мы выводим все товары -->
 {% block content %}
-<h1>Все новости</h1>
-    <h3>Количество новостей - {{ news|length }}</h3>
+    <h1>Все новости</h1>
+    <form method="GET">
+        {{ filter.form }}
+        <!-- Форму от фильтров за нас сделает Django. А вот кнопку, увы, придётся делать самим -->
+        <input class="btn btn-primary" type="submit" value="Найти">
+    </form>
+    <h3>Количество новостей на странице - {{ news|length }}</h3>
     {% if news %}
         <table class="table">
             <tr>
@@ -22,11 +27,21 @@
                 <th scope="col">
                     Текст
                 </th>
+                <th scope="col">
+                    Действия
+                </th>
             </tr>
             {% for new in news %}
                 <tr>
                     <td>
-                        {{ new.title|censor }}
+                        <a href="{% url 'rest:news_detail' new.id %}">
+                       <!-- здесь
+                           fastfood -- название приложения, которое задано в urls.py с помощью директивы app_name,
+                           product_detail -- название ссылки в списке эндпойнтов urlpatterns,
+                           product.id -- id объекта, который передаётся в качестве через эндпойнт и подставляется вместо <int:pk>
+                               -->
+                            {{ new.title|censor }}
+                        </a>
                     </td>
                     <td>
                         {{ new.time_in|date:'d-M-Y H:i'}}
@@ -34,9 +49,18 @@
                     <td>
                         {{ new.post_text|truncatechars:50|censor }}
                     </td>
+                    <td>
+                        <a href="{% url 'rest:news_update' new.id %}">
+                            Update
+                        </a>
+                        <a href="{% url 'rest:news_delete' new.id %}">
+                            Delete
+                        </a>
+                    </td>
                 </tr>
             {% endfor %}
         </table>
+        {% include 'rest/parts/paginator.html' %}
     {% else %}
         <h2>Новостей нет</h2>
     {% endif %}
