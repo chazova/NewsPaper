@@ -8,6 +8,8 @@ from .models import *
 from .filters import NewsFilter
 from .forms import NewsForm
 from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
 
 class NewsList(ListView):
@@ -73,15 +75,17 @@ class NewsDetailView(DetailView):
 
 
 # дженерик для создания объекта. Надо указать только имя шаблона и класс формы, который мы написали в прошлом юните. Остальное он сделает за вас
-class NewsCreateView(CreateView):
+class NewsCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     template_name = 'rest/news_create.html'
     form_class = NewsForm
+    permission_required = ('rest.add_post',)
 
 
 # дженерик для редактирования объекта
-class NewsUpdateView(UpdateView):
+class NewsUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     template_name = 'rest/news_create.html'
     form_class = NewsForm
+    permission_required = ('rest.change_post',)
 
     # метод get_object мы используем вместо queryset, чтобы получить информацию об объекте который мы собираемся редактировать
     def get_object(self, **kwargs):
@@ -90,11 +94,12 @@ class NewsUpdateView(UpdateView):
 
 
 # дженерик для удаления товара
-class NewsDeleteView(DeleteView):
+class NewsDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     template_name = 'rest/news_delete.html'
     context_object_name = 'news'
     queryset = Post.objects.all()
     success_url = reverse_lazy('rest:news')  # не забываем импортировать функцию reverse_lazy из пакета django.urls
+    permission_required = ('rest.delete_post',)
 
 
 
