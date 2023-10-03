@@ -7,13 +7,16 @@ News create
 
 {% block content %}
 
+<br>
 <h3>News Information</h3>
 
 <form method="POST">
  {% csrf_token %}
  {{ form }}
    <!-- Теперь нам нужна только готовая форма и кнопка -->
+    <br>
    <input class="btn btn-success" type="submit" value="Add">
 </form>
+<br>
 
 {% endblock content %}

@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h2>Новая статья в твоём любимом разделе!</h2>
+    <h3>{{ post.title }}</h3>
+    <p>{{ post.preview }}</p>
+    <a href="http://127.0.0.1:8000{% url 'rest:news_detail' post.id %}">Читать далее...</a>
+</body>
+</html>

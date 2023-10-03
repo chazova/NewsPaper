@@ -7,7 +7,7 @@ class NewsForm(ModelForm):
 # В класс мета, как обычно, надо написать модель, по которой будет строиться форма, и нужные нам поля. Мы уже делали что-то похожее с фильтрами
     class Meta:
         model = Post
-        fields = ['author', 'post_type', 'title', 'post_text']
+        fields = ['author', 'post_type', 'title', 'category', 'post_text']
         widgets = {
             'author': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -19,6 +19,10 @@ class NewsForm(ModelForm):
             'title': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Enter title'
+            }),
+            'category': forms.SelectMultiple(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter category'
             }),
             'post_text': forms.Textarea(attrs={
                 'class': 'form-control',

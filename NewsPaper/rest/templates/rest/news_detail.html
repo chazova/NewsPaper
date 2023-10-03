@@ -6,20 +6,28 @@ News
 {% endblock title %}
 
 {% block content %}
-<div class="card">
-    <div class="card-header">
-        <h3>
-            {{ news.name }}
-        </h3>
-        <div>
-            Author: <span class="badge bg-info">{{ news.author.author.username }}</span>
-            Post_type: <span class="badge bg-info">{{ news.post_type }}</span>
-            Title: <span class="badge bg-info">{{ news.title }}</span>
+    <br>
+    <div class="card">
+        <div class="card-header">
+            <h3>
+                {{ news.name }}
+            </h3>
+            <div>
+                Author: <span class="badge bg-info">{{ news.author.author.username }}</span>
+                Post_type: <span class="badge bg-info">{{ news.post_type }}</span>
+                Title: <span class="badge bg-info">{{ news.title }}</span>
+            </div>
+        </div>
+        <div class="card-body">
+            {{ news.post_text }}
         </div>
     </div>
-    <div class="card-body">
-        {{ news.post_text }}
-    </div>
-</div>
-
+    <br>
+    {% if is_not_subscriber %}
+        <a class="btn btn-primary btn-sm" href="{% url 'rest:upgrade' news.id %}">
+            Подписаться
+        </a>
+    {% else %}
+        <h3>Вы подписаны!</h3>
+    {% endif %}
 {% endblock content %}

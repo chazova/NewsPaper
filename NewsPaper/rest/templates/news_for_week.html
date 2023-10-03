@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h2>Новые статьи в твоём любимом разделе {{ category }}!</h2>
+    <table class="table">
+        <tr>
+            <th scope="col">
+                Заголовок
+            </th>
+            <th scope="col">
+                Дата публикации
+            </th>
+        </tr>
+        {% for post in posts %}
+            <tr>
+                <td>
+                    <a href="{% url 'rest:news_detail' post.id %}">
+                   <!-- здесь
+                       fastfood -- название приложения, которое задано в urls.py с помощью директивы app_name,
+                       product_detail -- название ссылки в списке эндпойнтов urlpatterns,
+                       product.id -- id объекта, который передаётся в качестве через эндпойнт и подставляется вместо <int:pk>
+                           -->
+                        {{ post.title }}
+                    </a>
+                </td>
+                <td>
+                    {{ post.time_in|date:'d-M-Y H:i'}}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

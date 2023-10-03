@@ -1,2 +1,4 @@
-Django
-django-filter
+Django~=4.2.4
+django-filter~=23.2
+APScheduler~=3.10.4
+django-allauth~=0.56.1

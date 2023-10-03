@@ -5,6 +5,7 @@ from django.db.models import Sum
 
 # Create your models here.
 
+
 class Author(models.Model):
     author = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     rating = models.IntegerField(default=0)
@@ -24,8 +25,27 @@ class Author(models.Model):
     def __str__(self):
         return self.author.username
 
+
+# class Subscriber(models.Model):
+#     subscriber = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+#     categories = models.ManyToManyField(Category, through='CategorySubscriber')
+#
+#     def __str__(self):
+#         return self.subscriber.username
+
+
 class Category(models.Model):
     category_name = models.CharField(max_length=255, primary_key=True)
+    subscribers = models.ManyToManyField(User, through='CategorySubscriber', blank=True)
+
+    def __str__(self):
+        return self.category_name
+
+
+class CategorySubscriber(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+
 
 class Post(models.Model):
     TYPES = [
@@ -58,9 +78,11 @@ class Post(models.Model):
     def get_absolute_url(self):  # добавим абсолютный путь, чтобы после создания нас перебрасывало на страницу с товаром
         return f'/news/{self.id}'
 
+
 class PostCategory(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
+
 
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
@@ -76,3 +98,7 @@ class Comment(models.Model):
     def dislike(self):
         self.rating -= 1
         self.save()
+
+    def __str__(self):
+        return self.comment_text
+

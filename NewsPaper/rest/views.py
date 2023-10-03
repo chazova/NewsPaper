@@ -1,7 +1,7 @@
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, \
     DeleteView  # импортируем необходимые дженерики
 from django.utils import timezone
-from django.shortcuts import render
+from django.shortcuts import render, reverse, redirect
 from django.core.paginator import Paginator
 from django.views import View
 from .models import *
@@ -10,6 +10,16 @@ from .forms import NewsForm
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail
+from django.http import HttpResponseRedirect
+
+from django.core.mail import EmailMultiAlternatives  # импортируем класс для создание объекта письма с html
+from datetime import datetime
+
+from django.template.loader import render_to_string  # импортируем функцию, которая срендерит наш html в текст
+from .models import CategorySubscriber
+
 
 
 class NewsList(ListView):
@@ -72,6 +82,33 @@ class NewsDetailView(DetailView):
     template_name = 'rest/news_detail.html'
     context_object_name = 'news'
     queryset = Post.objects.all()
+
+    def get_object(self, **kwargs):
+        id = self.kwargs.get('pk')
+        return Post.objects.get(pk=id)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        categories = context['object'].category.all()
+        is_not_subscriber = False
+        for category in categories:
+            if not (user in category.subscribers.all()) and not is_not_subscriber:
+                is_not_subscriber = True
+        context['is_not_subscriber'] = is_not_subscriber
+        return context
+
+
+@login_required
+def upgrade_me(request, pk):
+    user = request.user
+    categories = Post.objects.get(pk=pk).category.all()
+    for category in categories:
+        print(category)
+        if not (user in category.subscribers.all()): category.subscribers.add(user)
+    print(request.META.get('HTTP_REFERER'))
+    # return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    return redirect(f'/news/{pk}')
 
 
 # дженерик для создания объекта. Надо указать только имя шаблона и класс формы, который мы написали в прошлом юните. Остальное он сделает за вас

@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import NewsList, News, NewsDetailView, NewsCreateView, NewsUpdateView, NewsDeleteView
+from .views import NewsList, News, NewsDetailView, NewsCreateView, NewsUpdateView, NewsDeleteView, upgrade_me
 
 app_name = 'rest'
 
@@ -13,4 +13,5 @@ urlpatterns = [
     # path('news/', News.as_view())
     path('<int:pk>/edit/', NewsUpdateView.as_view(), name='news_update'), # Ссылка на редактирование товара
     path('<int:pk>/delete/', NewsDeleteView.as_view(), name='news_delete'), # Ссылка на удаление товара
+    path('upgrade/<int:pk>/', upgrade_me, name='upgrade')
 ]
