@@ -17,12 +17,24 @@
 </title>
 </head>
 <body>
-{% include './parts/header.html' %}
+{% load cache %} <!-- Загружаем кэширование -->
+    {% cache 60 header %} <!-- Кэшируем отдельный блок на 60 секунд -->
+        {% block header %}
+            {% include './parts/header.html' %}
+        {% endblock header %}
+    {% endcache %}
+
 <div class="container">
  {% block content %}
  {% endblock content %}
 </div>
 
-{% include './parts/footer.html' %}
+
+{% cache 30 footer %} <!-- Кэшируем отдельный блок на 30 секунд -->
+    {% block footer %}
+        {% include './parts/footer.html' %}
+    {% endblock footer %}
+{% endcache %}
+
 </body>
 </html>

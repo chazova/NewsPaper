@@ -11,6 +11,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.decorators import login_required
+from django.core.cache import cache # импортируем наш кэш
 from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
 
@@ -83,9 +84,18 @@ class NewsDetailView(DetailView):
     context_object_name = 'news'
     queryset = Post.objects.all()
 
-    def get_object(self, **kwargs):
-        id = self.kwargs.get('pk')
-        return Post.objects.get(pk=id)
+    def get_object(self, *args, **kwargs):
+        obj = cache.get(f'post-{self.kwargs["pk"]}', None)
+        # кэш очень похож на словарь, и метод get действует также.
+        # Он забирает значение по ключу, если его нет, то забирает None.
+        # если объекта нет в кэше, то получаем его и записываем в кэш
+        if not obj:
+            obj = super().get_object(queryset=self.queryset)
+            cache.set(f'post-{self.kwargs["pk"]}', obj)
+
+        return obj
+        # id = self.kwargs.get('pk')
+        # return Post.objects.get(pk=id)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
